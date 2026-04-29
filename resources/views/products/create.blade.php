@@ -1,71 +1,136 @@
-<div class="modal-header">
-    <h5 class="modal-title">Add Product</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Add Product
+            </h2>
 
-<form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
+            <a href="{{ route('products.index') }}" class="btn btn-secondary">
+                Back
+            </a>
+        </div>
+    </x-slot>
 
-    <div class="modal-body">
+    <div class="py-12">
+        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
 
-        <div class="row">
+            <div class="bg-white shadow-xl sm:rounded-lg p-6">
 
-            <div class="col-md-6 mb-3">
-                <label>Name</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
+                <!-- Success -->
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-            <div class="col-md-6 mb-3">
-                <label>SKU</label>
-                <input type="text" name="sku" class="form-control" required>
-            </div>
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
 
-            <div class="col-md-6 mb-3">
-                <label>Category</label>
-                <select name="category_id" class="form-control" required>
-                    <option value="">Select Category</option>
-                    {{-- @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                    @endforeach --}}
-                </select>
-            </div>
+                    <div class="row">
 
-            <div class="col-md-6 mb-3">
-                <label>Price</label>
-                <input type="number" step="0.01" name="price" class="form-control" required>
-            </div>
+                        <!-- Name -->
+                        <div class="col-md-6 mb-3">
+                            <label>Name</label>
+                            <input type="text" name="name"
+                                   value="{{ old('name') }}"
+                                   class="form-control @error('name') is-invalid @enderror">
 
-            <div class="col-md-6 mb-3">
-                <label>Quantity</label>
-                <input type="number" name="quantity" class="form-control" required>
-            </div>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-            <div class="col-md-6 mb-3">
-                <label>Status</label>
-                <select name="status" class="form-control">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="pending">Pending</option>
-                </select>
-            </div>
+                        <!-- SKU -->
+                        <div class="col-md-6 mb-3">
+                            <label>SKU</label>
+                            <input type="text" name="sku"
+                                   value="{{ old('sku') }}"
+                                   class="form-control @error('sku') is-invalid @enderror">
 
-            <div class="col-md-12 mb-3">
-                <label>Description</label>
-                <textarea name="description" class="form-control"></textarea>
-            </div>
+                            @error('sku')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
-            <div class="col-md-12 mb-3">
-                <label>Image</label>
-                <input type="file" name="image" class="form-control">
+                        <!-- Category -->
+                        <div class="col-md-6 mb-3">
+                            <label>Category</label>
+                            <select name="category_id"
+                                    class="form-control @error('category_id') is-invalid @enderror">
+                                <option value="">Select Category</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}"
+                                        {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                        {{ $cat->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('category_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-md-6 mb-3">
+                            <label>Price</label>
+                            <input type="number" step="0.01" name="price"
+                                   value="{{ old('price') }}"
+                                   class="form-control @error('price') is-invalid @enderror">
+
+                            @error('price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="col-md-6 mb-3">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity"
+                                   value="{{ old('quantity') }}"
+                                   class="form-control @error('quantity') is-invalid @enderror">
+
+                            @error('quantity')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mb-3">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ old('status')=='inactive' ? 'selected' : '' }}>Inactive</option>
+                                <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>Pending</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-md-12 mb-3">
+                            <label>Description</label>
+                            <textarea name="description"
+                                      class="form-control">{{ old('description') }}</textarea>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="col-md-12 mb-3">
+                            <label>Image</label>
+                            <input type="file" name="image" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary">Save Product</button>
+                    </div>
+
+                </form>
+
             </div>
 
         </div>
-
     </div>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Save</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    </div>
-
-</form>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</x-app-layout>

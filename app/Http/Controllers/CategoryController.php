@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -21,7 +22,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-       return view('categories.create');
+        $categories = Category::latest()->get();
+       return view('categories.create',compact('categories'));
     }
 
     /**
@@ -29,9 +31,26 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
 
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug',
+            'status' => 'required|in:0,1'
+    ]);
+
+     if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->status = $request->status;
+        $category->save();
+
+        return redirect(route('categories.index'))->with('success','Category Created SuccessFully');
+
+}
 
     /**
      * Show the form for editing the specified resource.
