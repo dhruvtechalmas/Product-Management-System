@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\LoginResponse as CustomLoginResponse;
+use App\Actions\Fortify\LoginResponse;
+use App\Actions\Fortify\RegisterResponse;
+use App\Actions\Fortify\RegisterResponse as CustomRegisterResponse;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
@@ -13,7 +17,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
-
+use Laravel\Fortify\Contracts\LogoutResponse;
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -29,6 +33,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
@@ -44,5 +49,16 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
+
+        $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
+
+        $this->app->singleton(RegisterResponse::class, CustomRegisterResponse::class);
+
+        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+    public function toResponse($request)
+    {
+        return redirect('/login');
+    }
+});
     }
 }

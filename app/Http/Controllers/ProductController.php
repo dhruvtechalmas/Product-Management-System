@@ -7,17 +7,32 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
+
+    
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $products = Product::latest()->paginate(5);
-        $products = Product::withTrashed()->get();
+        $query = Product::with('category')->withTrashed();
+
+        // 🔍 Search
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('sku', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // 📄 Pagination
+        $products = $query->paginate(1)->withQueryString();
+
         $categories = Category::all();
+
         return view('products.index', compact('products', 'categories'));
     }
 
@@ -44,7 +59,7 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:0,1'
 
         ]);
 
@@ -102,12 +117,12 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:active,inactive',
+            'status' => 'required|in:0,1'
 
         ]);
 
         if ($validator->fails()) {
-            return redirect(route('products.edit',$product->id))->withErrors($validator)->withInput();
+            return redirect(route('products.edit', $product->id))->withErrors($validator)->withInput();
         }
 
 
@@ -156,26 +171,56 @@ class ProductController extends Controller
 
     }
 
-    public function restore($id){
+    public function restore($id)
+    {
 
-       $product = Product::withTrashed()->findOrFail($id);
-       $product->restore();
+        $product = Product::withTrashed()->findOrFail($id);
+        $product->restore();
 
-       return redirect(route('products.index'))->with('success','Product Restore SuccessFully');
+        return redirect(route('products.index'))->with('success', 'Product Restore SuccessFully');
 
     }
 
     public function forceDelete($id)
-{
-    $product = Product::withTrashed()->findOrFail($id);
+    {
+        $product = Product::withTrashed()->findOrFail($id);
 
-    // image delete only here
-    if ($product->image) {
-        File::delete(public_path('uploads/products/' . $product->image));
+        // image delete only here
+        if ($product->image) {
+            File::delete(public_path('uploads/products/' . $product->image));
+        }
+
+        $product->forceDelete();
+
+        return redirect()->back()->with('success', 'Product Permanently Deleted');
     }
 
-    $product->forceDelete();
+    //pdf funtions
 
-    return redirect()->back()->with('success', 'Product Permanently Deleted');
-}
+    public function exportSingle($id)
+    {
+        $product = Product::findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.single', compact('product'));
+
+        return $pdf->download('product.pdf');
+    }
+
+    public function exportAll()
+    {
+        $products = Product::all();
+
+        $pdf = Pdf::loadView('pdf.all', compact('products'));
+
+        return $pdf->download('products.pdf');
+    }
+
+    public function exportCategory($id)
+    {
+        $products = Product::where('category_id', $id)->get();
+
+        $pdf = Pdf::loadView('pdf.category', compact('products'));
+
+        return $pdf->download('category.pdf');
+    }
 }

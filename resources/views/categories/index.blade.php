@@ -5,9 +5,11 @@
                 Category List
             </h2>
 
+            @role('admin')
            <a href="{{ route('categories.create') }}" class="btn btn-primary">
                 Add Category +
             </a>
+            @endrole
 
         </div>
     </x-slot>
@@ -70,12 +72,17 @@
                                     </td>
 
                                     <td>
+                                        @role('admin')
                                         <a href="{{ route('categories.edit',$category->id) }}" class="btn btn-dark">Edit</a>
+                                        @endrole
+                                        @role('admin')
                                         <a href="{{ route('categories.destroy', $category->id) }}" 
                                             class="btn btn-danger btn-sm"
                                             onclick="return confirm('Are you sure you want to delete Category? !')">
                                                 Delete 
-                                            </a>
+                                        </a>
+                                        @endrole
+
                                     </td>
                                 </tr>
                             @endforeach

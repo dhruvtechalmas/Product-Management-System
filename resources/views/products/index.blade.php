@@ -6,12 +6,29 @@
                 Product List
             </h2>
 
+            <form method="post" action="{{ route('products.index') }}" class="mb-2 d-flex">
+
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product..."
+                    class="form-control me-2">
+
+                <button class="btn btn-primary">Search</button>
+
+            </form>
+
+            @role('admin')
             <a href="{{ route('products.create') }}" class="btn btn-primary">
                 Add Product +
             </a>
+            @endrole
 
         </div>
     </x-slot>
+
+    <div class="mb-2">
+        <a href="{{ route('products.pdf') }}" class="bg-blue-500 text-white px-4 py-2 rounded btn btn-primary ">
+            Download All PDF
+        </a>
+    </div>
 
 
     @if(Session::has('success'))
@@ -58,6 +75,7 @@
                             <th>Image</th>
                             <th>Created_at</th>
                             <th>Action</th>
+                            <th>Download</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,8 +83,8 @@
                             @foreach($products as $product)
                                 <tr>
 
-                                     {{-- Hide Details --}}
-                                     @if($product->trashed())
+                                    {{-- Hide Details --}}
+                                    @if($product->trashed())
                                         <td colspan="8" class="text-center text-danger">
                                             This product is deleted
                                         </td>
@@ -78,47 +96,57 @@
                                             </a>
 
                                             <!-- Permanent Delete -->
-                                            <a href="{{ route('products.forceDelete', $product->id) }}" 
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure? This will permanently delete!')">
+                                            <a href="{{ route('products.forceDelete', $product->id) }}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure? This will permanently delete!')">
                                                 Delete Permanently
                                             </a>
                                         </td>
 
-                                     @else
+                                    @else
 
-                                    <td>{{ $product->id }}</td>
-                                    <td>{{ $product->name }}</td>
-                                    <td>{{ $product->sku }}</td>
-                                    <td>{{ $product->category->name ?? '-' }}</td>
-                                    <td>${{ $product->price }}</td>
-                                    <td>{{ $product->quantity }}</td>
-                                    <td>
-                                        <span class="badge bg-success">
-                                            {{ $product->status ? 'Active' : 'Inactive'  }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        @if($product->image)
-                                            <img class="rounded" src="{{ url('uploads/products/' . $product->image) }}" width="50">
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($product->created_at)->format('d-M-Y') }}
-                                    </td>
-                                    <td>
-                                        
-                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-dark">Edit</a>
+                                        <td>{{ $product->id }}</td>
+                                        <td>{{ $product->name }}</td>
+                                        <td>{{ $product->sku }}</td>
+                                        <td>{{ $product->category->name ?? '-' }}</td>
+                                        <td>${{ $product->price }}</td>
+                                        <td>{{ $product->quantity }}</td>
+                                        <td>
+                                            <span class="badge bg-success">
+                                                {{ $product->status ? 'Active' : 'Inactive'  }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if($product->image)
+                                                <img class="rounded" src="{{ url('uploads/products/' . $product->image) }}" width="50">
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ \Carbon\Carbon::parse($product->created_at)->format('d-M-Y') }}
+                                        </td>
+                                        <td>
+                                            @role('admin')
 
-                                        <a href="#" onclick="deleteproduct({{ $product->id }})"
-                                            class="btn btn-danger">Delete</a>
-                                        <form id="delete-product-from-{{ $product->id }}"
-                                            action="{{ route('products.destroy', $product->id) }}" method="post">
-                                            @method('delete')
-                                            @csrf
-                                        </form>
+                                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-dark">Edit</a>
+                                            @endrole
+                                            @role('admin')
+                                            <a href="#" onclick="deleteproduct({{ $product->id }})"
+                                                class="btn btn-danger">Delete</a>
+                                            <form id="delete-product-from-{{ $product->id }}"
+                                                action="{{ route('products.destroy', $product->id) }}" method="post">
+                                                @method('delete')
+                                                @csrf
+                                            </form>
+                                            @endrole
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('product.pdf.single', $product->id) }}"
+                                                class="bg-green-500 text-white px-3 py-1 rounded btn btn-success">
+                                                PDF
+                                            </a>
 
-                                    </td>
+
+                                        </td>
                                     @endif
 
                                 </tr>
@@ -133,7 +161,9 @@
                     </tbody>
                 </table>
 
-                {{-- {{ $product->links() }} --}}
+                <div class="mt-3">
+                    {{ $products->links() }}
+                </div>
 
             </div>
 
@@ -149,6 +179,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

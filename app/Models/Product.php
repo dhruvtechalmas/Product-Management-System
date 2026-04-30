@@ -10,7 +10,7 @@ class Product extends Model
 
     use SoftDeletes;
 
-    protected $fiallable = [
+    protected $fillable = [
     'name',
     'sku',
     'category_id',

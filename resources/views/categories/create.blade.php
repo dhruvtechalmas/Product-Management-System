@@ -11,6 +11,16 @@
         </div>
     </x-slot>
 
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
 
@@ -30,9 +40,8 @@
                     <!-- Name -->
                     <div class="mb-3">
                         <label class="form-label">Category Name</label>
-                        <input type="text" name="name"
-                               value="{{ old('name')}}"
-                               class="form-control @error('name') is-invalid @enderror">
+                        <input type="text" name="name" value="{{ old('name')}}"
+                            class="form-control @error('name') is-invalid @enderror">
 
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -42,9 +51,8 @@
                     <!-- Slug -->
                     <div class="mb-3">
                         <label class="form-label">Slug</label>
-                        <input type="text" name="slug"
-                               value="{{ old('slug') }}"
-                               class="form-control @error('slug') is-invalid @enderror">
+                        <input type="text" name="slug" value="{{ old('slug') }}"
+                            class="form-control @error('slug') is-invalid @enderror">
 
                         @error('slug')
                             <div class="invalid-feedback">{{ $message }}</div>

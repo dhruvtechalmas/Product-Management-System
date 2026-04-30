@@ -100,8 +100,8 @@
                         <div class="col-md-6 mb-3">
                             <label>Status</label>
                             <select name="status" class="form-control">
-                                <option value="active" {{ old('status',  $product->status)=='active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', $product->status)=='inactive' ? 'selected' : '' }}>Inactive</option>
+                                <option value="1" {{ old('status',  $product->status)== 1 ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status', $product->status)== 0 ? 'selected' : '' }}>Inactive</option>
                             </select>
                         </div>
 

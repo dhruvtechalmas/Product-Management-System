@@ -5,6 +5,14 @@
         </h2>
     </x-slot>
 
+    @role('admin')
+    <h3>Admin Dashboard</h3>
+    @endrole
+
+    @role('staff')
+    <h3>Staff Dashboard</h3>
+    @endrole
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">

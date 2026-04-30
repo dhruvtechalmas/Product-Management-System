@@ -99,9 +99,8 @@
                         <div class="col-md-6 mb-3">
                             <label>Status</label>
                             <select name="status" class="form-control">
-                                <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status')=='inactive' ? 'selected' : '' }}>Inactive</option>
-                                <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="1" {{ old('status')== 1 ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status')== 0 ? 'selected' : '' }}>Inactive</option>
                             </select>
                         </div>
 
