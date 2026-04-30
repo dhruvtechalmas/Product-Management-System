@@ -14,7 +14,7 @@
 
     @if(Session::has('success'))
         <div class="alert alert-primary d-flex align-items-center" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" class="bi flex-shrink-0 me-2" viewBox="0 0 16 16" role="img"
+            <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20" class="bi flex-shrink-0 me-2" viewBox="0 0 16 16" role="img"
                 aria-label="Warning:">
                 <path
                     d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
@@ -48,6 +48,7 @@
                             <th>Name</th>
                             <th>Slug</th>
                             <th>Status</th>
+                            <th>Created_at</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -64,30 +65,17 @@
                                             {{ $category->status ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($category->created_at)->format('d-M-Y') }}
+                                    </td>
 
                                     <td>
-
-                                        {{-- <!-- Edit -->
-                                        <a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#editModal{{ $category->id }}">
-                                            Edit
-                                        </a>
-
-                                        <!-- Delete -->
-                                        <form id="delete-form-{{ $category->id }}"
-                                            action="{{ route('categories.destroy', $category->id) }}" method="POST"
-                                            style="display:none;">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form>
-
-                                        <a href="#" class="btn btn-danger btn-sm" onclick="event.preventDefault();
-                                           if(confirm('Delete this category?')){
-                                               document.getElementById('delete-form-{{ $category->id }}').submit();
-                                           }">
-                                            Delete
-                                        </a> --}}
-
+                                        <a href="{{ route('categories.edit',$category->id) }}" class="btn btn-dark">Edit</a>
+                                        <a href="{{ route('categories.destroy', $category->id) }}" 
+                                            class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Are you sure you want to delete Category? !')">
+                                                Delete 
+                                            </a>
                                     </td>
                                 </tr>
                             @endforeach

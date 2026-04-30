@@ -11,11 +11,19 @@ Route::get('/', function () {
 Route::get('product', [ProductController::class, 'index'])->name('products.index');
 Route::get('product/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('product', [ProductController::class, 'store'])->name('products.store');
+Route::get('product/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+Route::put('product/{product}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('product/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('product/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
+Route::get('product/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
 
 
 Route::get('category', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('category/create', [CategoryController::class, 'create'])->name('categories.create');
 Route::post('category', [CategoryController::class, 'store'])->name('categories.store');
+Route::get('category/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::post('category/{category}', [CategoryController::class, 'update'])->name('categories.update');
+Route::get('category/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
 
 

@@ -55,24 +55,50 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit($id)
     {
-        //
+        $category = Category::findOrFail($id);
+       
+        return view('categories.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $id)
     {
-        //
+
+        $category = Category::findOrFail($id);
+
+         $validator = Validator::make($request->all(), [
+
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug',
+            'status' => 'required|in:0,1'
+    ]);
+
+     if ($validator->fails()) {
+            return redirect('categories.edit', $category->id)->withErrors($validator)->withInput();
+        }
+
+        
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->status = $request->status;
+        $category->save();
+
+        return redirect(route('categories.index'))->with('success','Category Created SuccessFully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy( $id)
     {
-        //
+        $category = Category::findOrFail($id);
+
+        $category->delete();
+
+        return redirect(route('categories.index'))->with('success','Your category Deleted SuccessFully');
     }
 }
