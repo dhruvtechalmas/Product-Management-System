@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,35 +16,40 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+   public function run(): void
     {
-        // Create roles
-        $adminRole = Role::create(['name' => 'admin']);
-        $staffRole = Role::create(['name' => 'staff']);
+        // products
+            User::factory()->count(5)->create();
+        
 
-        // Create admin user
-        $admin = User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        // roles
+        $adminRole = Role::firstOrCreate();
+        $staffRole = Role::firstOrCreate();
 
-        $admin->assignRole($adminRole); // ✔
+        // admin
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            ['name' => 'Admin', 'password' => bcrypt('12345678')]
+        );
 
-        // Create staff user
-        $staffUser = User::create([
-            'name' => 'Staff',
-            'email' => 'staff@gmail.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        if (!$admin->hasRole($adminRole)) {
+            $admin->assignRole($adminRole);
+        }
 
-        $staffUser->assignRole($staffRole); // ✔
+        // staff
+        $staffUser = User::firstOrCreate(
+            ['email' => 'staff@gmail.com'],
+            ['name' => 'Staff', 'password' => bcrypt('12345678')]
+        );
+
+        if (!$staffUser->hasRole($staffRole)) {
+            $staffUser->assignRole($staffRole);
+        }
 
         // test user
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
+        User::firstOrCreate(
+            ['email' => 'test@example.com'],
+            ['name' => 'Test User', 'password' => bcrypt('12345678')]
+        );
     }
 }

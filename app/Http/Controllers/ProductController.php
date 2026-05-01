@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendProductEmailJob;
+use App\Mail\ProductCreatedMail;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
 {
 
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -29,7 +33,7 @@ class ProductController extends Controller
         }
 
         // 📄 Pagination
-        $products = $query->paginate(1)->withQueryString();
+        $products = $query->paginate(5)->withQueryString();
 
         $categories = Category::all();
 
@@ -84,6 +88,22 @@ class ProductController extends Controller
             $product->image = $imagename;
             $product->save();
         }
+
+        // 👉 sab users nikalo
+        $users = User::all();
+       
+
+        // 👉 har user ko job dispatch
+        
+        $delay = 0;
+        
+        foreach ($users as $user) {
+            if (!empty($user->email) && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+                SendProductEmailJob::dispatch($product, $user);
+                $delay += 2; // har mail 2 sec baad
+            }
+        }
+
 
         return redirect(route('products.index'))->with('success', 'Product Created SuccessFully');
 

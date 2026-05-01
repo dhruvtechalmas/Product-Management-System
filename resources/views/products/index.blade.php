@@ -6,7 +6,7 @@
                 Product List
             </h2>
 
-            <form method="post" action="{{ route('products.index') }}" class="mb-2 d-flex">
+            <form method="GET" action="{{ route('products.index') }}" class="mb-2 d-flex">
 
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search product..."
                     class="form-control me-2">

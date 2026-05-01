@@ -1,8 +1,15 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+
+
+Route::get('/', function() {
+    return view('welcome');
+
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -42,6 +49,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 });
 
+
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');    
     Route::get('product', [ProductController::class, 'index'])->name('products.index')->middleware('auth');
     Route::get('/product/pdf/{id}', [ProductController::class, 'exportSingle'])->name('product.pdf.single')->middleware('auth');
     Route::get('/products/pdf', [ProductController::class, 'exportAll'])->name('products.pdf')->middleware('auth');
