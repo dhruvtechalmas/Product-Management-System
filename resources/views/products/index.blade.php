@@ -15,11 +15,13 @@
 
             </form>
 
-            @role('admin')
-            <a href="{{ route('products.create') }}" class="btn btn-primary">
-                Add Product +
-            </a>
-            @endrole
+            @can('admin')
+                <a href="{{ route('products.create') }}" class="btn btn-primary">
+                    Add Product +
+                </a>
+            @endcan
+
+
 
         </div>
     </x-slot>
@@ -125,19 +127,23 @@
                                             {{ \Carbon\Carbon::parse($product->created_at)->format('d-M-Y') }}
                                         </td>
                                         <td>
-                                            @role('admin')
 
-                                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-dark">Edit</a>
-                                            @endrole
-                                            @role('admin')
-                                            <a href="#" onclick="deleteproduct({{ $product->id }})"
-                                                class="btn btn-danger">Delete</a>
-                                            <form id="delete-product-from-{{ $product->id }}"
-                                                action="{{ route('products.destroy', $product->id) }}" method="post">
-                                                @method('delete')
-                                                @csrf
-                                            </form>
-                                            @endrole
+                                            @can('admin')
+                                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-dark">Edit</a>
+
+                                            @endcan
+
+                                            @can('admin')
+                                                <a href="#" onclick="deleteproduct({{ $product->id }})"
+                                                    class="btn btn-danger">Delete</a>
+                                                <form id="delete-product-from-{{ $product->id }}"
+                                                    action="{{ route('products.destroy', $product->id) }}" method="post">
+                                                    @method('delete')
+                                                    @csrf
+                                                </form>
+                                            @endcan
+
+
                                         </td>
                                         <td>
                                             <a href="{{ route('product.pdf.single', $product->id) }}"

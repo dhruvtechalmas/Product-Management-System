@@ -33,7 +33,7 @@ class ProductController extends Controller
         }
 
         // 📄 Pagination
-        $products = $query->paginate(5)->withQueryString();
+        $products = $query->paginate(25)->withQueryString();
 
         $categories = Category::all();
 

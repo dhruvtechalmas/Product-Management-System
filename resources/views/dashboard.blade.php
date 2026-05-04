@@ -135,4 +135,6 @@
         </div>
     </div>
 
+ {{-- {{ auth()->user() ? auth()->user()->email : 'No User' }} --}}
+
 </x-app-layout>

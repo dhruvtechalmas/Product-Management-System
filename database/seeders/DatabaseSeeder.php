@@ -7,7 +7,8 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-// use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Permission;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,40 +17,65 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-   public function run(): void
+    public function run(): void
     {
-        // products
-            User::factory()->count(5)->create();
-        
 
-        // roles
-        $adminRole = Role::firstOrCreate();
-        $staffRole = Role::firstOrCreate();
+        // USERS
+        User::factory()->count(5)->create();
 
-        // admin
-        $admin = User::firstOrCreate(
+        //  PERMISSIONS
+        Permission::firstOrCreate(['name' => 'product.view']);
+        Permission::firstOrCreate(['name' => 'product.create']);
+        Permission::firstOrCreate(['name' => 'product.edit']);
+        Permission::firstOrCreate(['name' => 'product.delete']);
+
+        Permission::firstOrCreate(['name' => 'category.view']);
+        Permission::firstOrCreate(['name' => 'category.create']);
+        Permission::firstOrCreate(['name' => 'category.edit']);
+        Permission::firstOrCreate(['name' => 'category.delete']);
+
+        // ROLES
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin']);
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $staff = Role::firstOrCreate(['name' => 'staff']);
+
+        //  ASSIGN PERMISSIONS
+
+        $superAdmin->givePermissionTo(Permission::all());
+
+        $admin->givePermissionTo([
+            'product.view',
+            'product.create',
+            'product.edit',
+            'category.view',
+            'category.create',
+            'category.edit'
+        ]);
+
+        $staff->givePermissionTo([
+            'product.view',
+            'category.view'
+        ]);
+
+        //  USERS
+
+        $adminUser = User::firstOrCreate(
             ['email' => 'admin@gmail.com'],
             ['name' => 'Admin', 'password' => bcrypt('12345678')]
         );
+        $adminUser->assignRole('admin');
 
-        if (!$admin->hasRole($adminRole)) {
-            $admin->assignRole($adminRole);
-        }
-
-        // staff
         $staffUser = User::firstOrCreate(
             ['email' => 'staff@gmail.com'],
             ['name' => 'Staff', 'password' => bcrypt('12345678')]
         );
+        $staffUser->assignRole('staff');
 
-        if (!$staffUser->hasRole($staffRole)) {
-            $staffUser->assignRole($staffRole);
-        }
-
-        // test user
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User', 'password' => bcrypt('12345678')]
+        $superUser = User::firstOrCreate(
+            ['email' => 'super@gmail.com'],
+            ['name' => 'Super Admin', 'password' => bcrypt('12345678')]
         );
+        $superUser->assignRole('super-admin');
     }
 }
+

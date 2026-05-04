@@ -6,7 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
 
-Route::get('/', function() {
+Route::get('/', function () {
     return view('welcome');
 
 });
@@ -26,34 +26,73 @@ Route::middleware([
 
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    Route::get('product/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('product', [ProductController::class, 'store'])->name('products.store');
-    Route::get('product/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-    Route::put('product/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('product/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-    Route::get('product/{id}/restore', [ProductController::class, 'restore'])->name('products.restore');
-    Route::get('product/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('products.forceDelete');
+Route::middleware(['auth', 'role:super-admin|super-admin'])->group(function () {
+
+    Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index'])
+        ->name('roles.index');
+
+    Route::post('/roles/update', [App\Http\Controllers\RoleController::class, 'update'])
+        ->name('roles.update');
+});
 
 
-    Route::get('category', [CategoryController::class, 'index'])->name('categories.index');
-    Route::get('category/create', [CategoryController::class, 'create'])->name('categories.create');
-    Route::post('category', [CategoryController::class, 'store'])->name('categories.store');
-    Route::get('category/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
-    Route::post('category/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::get('category/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+Route::middleware(['auth'])->group(function () {
 
-    Route::get('/category/pdf/{id}', [ProductController::class, 'exportCategory'])->name('category.pdf');
+    // 🔹 PRODUCTS
 
+    Route::get('product', [ProductController::class, 'index'])
+        ->middleware('permission:product.view')
+        ->name('products.index');
+
+    Route::get('product/create', [ProductController::class, 'create'])
+        ->middleware('permission:product.create')->name('products.create');
+
+    Route::post('product', [ProductController::class, 'store'])
+        ->middleware('permission:product.create')->name('products.store');
+
+    Route::get('product/{product}/edit', [ProductController::class, 'edit'])
+        ->middleware('permission:product.edit')->name('products.edit');
+
+    Route::put('product/{product}', [ProductController::class, 'update'])
+        ->middleware('permission:product.edit')->name('products.update');
+
+    Route::delete('product/{product}', [ProductController::class, 'destroy'])
+        ->middleware('permission:product.delete')->name('products.destroy');
+
+    Route::get('product', [ProductController::class, 'index'])
+        ->name('products.index')->middleware('auth');
+    Route::get('/product/pdf/{id}', [ProductController::class, 'exportSingle'])
+        ->name('product.pdf.single')->middleware('auth');
+    Route::get('/products/pdf', [ProductController::class, 'exportAll'])
+        ->name('products.pdf')->middleware('auth');
+
+
+    // 🔹 CATEGORIES
+
+    Route::get('category', [CategoryController::class, 'index'])
+        ->middleware('permission:category.view')->name('categories.index');
+
+    Route::get('category/create', [CategoryController::class, 'create'])
+        ->middleware('permission:category.create')->name('categories.create');
+
+    Route::post('category', [CategoryController::class, 'store'])
+        ->middleware('permission:category.create')->name('categories.store');
+
+    Route::get('category/{category}/edit', [CategoryController::class, 'edit'])
+        ->middleware('permission:category.edit')->name('categories.edit');
+
+    Route::post('category/{category}', [CategoryController::class, 'update'])
+        ->middleware('permission:category.edit')->name('categories.update');
+
+    Route::post('/categories/delete/{id}', [CategoryController::class, 'deleteWithOption'])
+        ->middleware('permission:category.delete')->name('categories.destroy');
 
 });
 
 
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');    
-    Route::get('product', [ProductController::class, 'index'])->name('products.index')->middleware('auth');
-    Route::get('/product/pdf/{id}', [ProductController::class, 'exportSingle'])->name('product.pdf.single')->middleware('auth');
-    Route::get('/products/pdf', [ProductController::class, 'exportAll'])->name('products.pdf')->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
 
