@@ -15,7 +15,7 @@
 
             </form>
 
-            @can('admin')
+            @can('product.create')
                 <a href="{{ route('products.create') }}" class="btn btn-primary">
                     Add Product +
                 </a>
@@ -128,12 +128,14 @@
                                         </td>
                                         <td>
 
-                                            @can('admin')
+                                            @can('product.edit')
                                                 <a href="{{ route('products.edit', $product->id) }}" class="btn btn-dark">Edit</a>
 
                                             @endcan
 
-                                            @can('admin')
+
+
+                                            @can('product.delete')
                                                 <a href="#" onclick="deleteproduct({{ $product->id }})"
                                                     class="btn btn-danger">Delete</a>
                                                 <form id="delete-product-from-{{ $product->id }}"
@@ -142,6 +144,15 @@
                                                     @csrf
                                                 </form>
                                             @endcan
+
+
+                                            <form action="{{ route('cart.add', $product->id) }}" method="POST"
+                                                style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-warning mt-1">
+                                                    Add To Cart
+                                                </button>
+                                            </form>
 
 
                                         </td>

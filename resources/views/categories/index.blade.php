@@ -5,7 +5,7 @@
                 Category List
             </h2>
 
-            @can('admin')
+            @can('category.create')
                 <a href="{{ route('categories.create') }}" class="btn btn-primary">
                     Add Category +
                 </a>
@@ -76,24 +76,25 @@
 
                                     <td>
 
-                                        @can('addmin')
+                                        @can('category.edit')
                                             <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-dark">Edit</a>
 
                                         @endcan
 
 
-                                        @can('admin')
+                                        @can('category.delete')
                                             <button class="btn btn-danger btn-sm"
                                                 onclick="deleteCategory({{ $category->id }}, {{ $category->products_count }})">
                                                 Delete
                                             </button>
-                                        @endcan
 
-                                        {{-- <a href="{{ route('categories.destroy', $category->id) }}"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure you want to delete Category? !')">
-                                            Delete
-                                        </a> --}}
+
+                                            {{-- <a href="{{ route('categories.destroy', $category->id) }}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Are you sure you want to delete Category? !')">
+                                                Delete
+                                            </a> --}}
+                                        @endcan
 
 
                                     </td>

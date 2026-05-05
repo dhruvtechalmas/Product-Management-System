@@ -36,6 +36,7 @@ class ProductController extends Controller
         $products = $query->paginate(25)->withQueryString();
 
         $categories = Category::all();
+      
 
         return view('products.index', compact('products', 'categories'));
     }

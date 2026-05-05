@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -11,9 +14,6 @@ Route::get('/', function () {
 
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
 
 Route::middleware([
     'auth:sanctum',
@@ -27,13 +27,15 @@ Route::middleware([
 });
 
 
-Route::middleware(['auth', 'role:super-admin|super-admin'])->group(function () {
+Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
-    Route::get('/roles', [App\Http\Controllers\RoleController::class, 'index'])
-        ->name('roles.index');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-    Route::post('/roles/update', [App\Http\Controllers\RoleController::class, 'update'])
-        ->name('roles.update');
+    Route::post('/users/permission-update', [UserController::class, 'updatePermissions'])
+        ->name('users.permission.update');
+
+    Route::delete('/users/delete/{id}', [UserController::class, 'delete'])
+        ->name('users.delete');
 });
 
 
@@ -42,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     // 🔹 PRODUCTS
 
     Route::get('product', [ProductController::class, 'index'])
-        ->middleware('permission:product.view')
+        ->middleware(['auth', 'permission:product.view'])
         ->name('products.index');
 
     Route::get('product/create', [ProductController::class, 'create'])
@@ -60,13 +62,19 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('product/{product}', [ProductController::class, 'destroy'])
         ->middleware('permission:product.delete')->name('products.destroy');
 
-    Route::get('product', [ProductController::class, 'index'])
-        ->name('products.index')->middleware('auth');
     Route::get('/product/pdf/{id}', [ProductController::class, 'exportSingle'])
         ->name('product.pdf.single')->middleware('auth');
+
     Route::get('/products/pdf', [ProductController::class, 'exportAll'])
         ->name('products.pdf')->middleware('auth');
 
+    Route::get('/products/restore/{id}', [ProductController::class, 'restore'])
+    ->name('products.restore');
+
+    Route::get('/products/force-delete/{id}', [ProductController::class, 'forceDelete'])
+    ->name('products.forceDelete');
+
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 
     // 🔹 CATEGORIES
 

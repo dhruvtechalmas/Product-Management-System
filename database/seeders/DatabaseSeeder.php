@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
 
         // USERS
-        User::factory()->count(5)->create();
+        User::factory()->create();
 
         //  PERMISSIONS
         Permission::firstOrCreate(['name' => 'product.view']);
@@ -43,19 +43,6 @@ class DatabaseSeeder extends Seeder
 
         $superAdmin->givePermissionTo(Permission::all());
 
-        $admin->givePermissionTo([
-            'product.view',
-            'product.create',
-            'product.edit',
-            'category.view',
-            'category.create',
-            'category.edit'
-        ]);
-
-        $staff->givePermissionTo([
-            'product.view',
-            'category.view'
-        ]);
 
         //  USERS
 
