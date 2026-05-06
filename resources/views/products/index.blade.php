@@ -77,6 +77,7 @@
                             <th>Image</th>
                             <th>Created_at</th>
                             <th>Action</th>
+                            {{-- <th>Cart</th> --}}
                             <th>Download</th>
                         </tr>
                     </thead>
@@ -146,6 +147,9 @@
                                             @endcan
 
 
+                                        </td>
+                                        {{-- <td>
+
                                             <form action="{{ route('cart.add', $product->id) }}" method="POST"
                                                 style="display:inline;">
                                                 @csrf
@@ -155,7 +159,7 @@
                                             </form>
 
 
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             <a href="{{ route('product.pdf.single', $product->id) }}"
                                                 class="bg-green-500 text-white px-3 py-1 rounded btn btn-success">

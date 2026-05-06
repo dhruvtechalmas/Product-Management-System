@@ -4,15 +4,25 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
 
+
 Route::get('/', function () {
-    return view('welcome');
+    $products = Product::all();
+    return view('welcome', compact('products'));
 
 });
+
+
+Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add.to.cart');
+Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+Route::post('/cart-update', [CartController::class, 'cartUpdate'])->name('cart.update');
+
+
 
 
 Route::middleware([
@@ -74,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products/force-delete/{id}', [ProductController::class, 'forceDelete'])
     ->name('products.forceDelete');
 
-    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+    
 
     // 🔹 CATEGORIES
 
