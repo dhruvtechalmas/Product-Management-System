@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Models\Order;
@@ -9,39 +11,31 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use Illuminate\Support\Facades\Request;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 
 
 Route::get('/', function () {
     $products = Product::all();
     return view('welcome', compact('products'));
+})->name('welcome');
 
-});
 
-
-Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add.to.cart');
-Route::get('/cart', [CartController::class, 'cart'])->name('cart');
-Route::post('/cart-update', [CartController::class, 'cartUpdate'])->name('cart.update');
+Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])
+->name('add.to.cart');
+Route::get('/cart', [CartController::class, 'cart'])
+->name('cart');
+Route::post('/cart-update', [CartController::class, 'cartUpdate'])
+->name('cart.update');
 Route::post('/order', [CartController::class, 'order'])
     ->middleware('auth')
     ->name('order.post');
-
-Route::get('/payment-success', function (Request $request) {
-
-    Order::where('payment_id', $request->payment_id)
-        ->update([
-            'payment_status' => 'paid'
-        ]);
-
-    session()->forget('cart');
-
-    return redirect('/')
-        ->with('success', 'Payment Successful');
-
-});
-
+Route::get('/payment-success',
+    [PaymentController::class, 'paymentSuccess']
+)->name('payment.success');
+Route::get('/invoice/{id}',
+    [InvoiceController::class, 'download'])
+    ->name('invoice.download');
 
 
 

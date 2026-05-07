@@ -80,7 +80,7 @@ class CartController extends Controller
         }
 
         $order->amount = $amount;
-        $order->payment_status = 'pending';
+        $order->payment_status = 'paid';
         $order->save();
 
         // Razorpay
