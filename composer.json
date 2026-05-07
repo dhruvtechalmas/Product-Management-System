@@ -16,6 +16,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^3.6.4",
+        "razorpay/razorpay": "^2.9",
         "spatie/laravel-permission": "^7.4"
     },
     "require-dev": {

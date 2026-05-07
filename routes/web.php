@@ -4,10 +4,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Request;
+// use Illuminate\Http\Request;
 
 
 
@@ -21,6 +24,23 @@ Route::get('/', function () {
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add.to.cart');
 Route::get('/cart', [CartController::class, 'cart'])->name('cart');
 Route::post('/cart-update', [CartController::class, 'cartUpdate'])->name('cart.update');
+Route::post('/order', [CartController::class, 'order'])
+    ->middleware('auth')
+    ->name('order.post');
+
+Route::get('/payment-success', function (Request $request) {
+
+    Order::where('payment_id', $request->payment_id)
+        ->update([
+            'payment_status' => 'paid'
+        ]);
+
+    session()->forget('cart');
+
+    return redirect('/')
+        ->with('success', 'Payment Successful');
+
+});
 
 
 
@@ -79,12 +99,12 @@ Route::middleware(['auth'])->group(function () {
         ->name('products.pdf')->middleware('auth');
 
     Route::get('/products/restore/{id}', [ProductController::class, 'restore'])
-    ->name('products.restore');
+        ->name('products.restore');
 
     Route::get('/products/force-delete/{id}', [ProductController::class, 'forceDelete'])
-    ->name('products.forceDelete');
+        ->name('products.forceDelete');
 
-    
+
 
     // 🔹 CATEGORIES
 

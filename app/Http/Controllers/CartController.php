@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log; 
+use Razorpay\Api\Api;
 
 class CartController extends Controller
 {
@@ -42,9 +44,9 @@ class CartController extends Controller
 
         $cart = session()->get('cart');
 
-        if ($request->type == "update"){
+        if ($request->type == "update") {
             $cart[$request->product_id]["quantity"] = $request->quantity;
-        }else{
+        } else {
             unset($cart[$request->product_id]);
         }
 
@@ -57,4 +59,60 @@ class CartController extends Controller
         ]);
 
     }
+
+    public function order(Request $request)
+    {
+        $order = Order::create([
+            'user_id' => auth()->id(),
+        ]);
+
+        $amount = 0;
+
+        foreach (session("cart") as $key => $value) {
+
+            $order->products()->create([
+                "product_id" => $key,
+                "quantity" => $value["quantity"],
+                "price" => $value["price"],
+            ]);
+
+            $amount += ($value["quantity"] * $value["price"]);
+        }
+
+        $order->amount = $amount;
+        $order->payment_status = 'pending';
+        $order->save();
+
+        // Razorpay
+
+        $api = new Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );
+
+        $razorpayOrder = $api->order->create([
+
+           'receipt' => (string) $order->id,
+
+            'amount' => $amount * 100,
+
+            'currency' => 'INR'
+
+        ]);
+
+        $order->payment_id = $razorpayOrder['id'];
+
+        $order->save();
+
+        return view('payment', [
+
+            'amount' => $amount * 100,
+
+            'razorpayOrderId' => $razorpayOrder['id'],
+
+            'order' => $order
+
+        ]);
+    }
+
 }

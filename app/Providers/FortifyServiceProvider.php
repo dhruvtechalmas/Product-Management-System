@@ -41,7 +41,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
@@ -55,10 +55,10 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->singleton(RegisterResponse::class, CustomRegisterResponse::class);
 
         $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
-    public function toResponse($request)
-    {
-        return redirect('/login');
-    }
-});
+            public function toResponse($request)
+            {
+                return redirect('/register');
+            }
+        });
     }
 }

@@ -6,21 +6,21 @@
 
             <tr>
 
-                <th>Products</th>
+                <th width="300">Products</th>
 
-                <th width="120px">
+                <th width="50px">
                     Price
                 </th>
 
-                <th width="150px">
+                <th width="50px">
                     Quantity
                 </th>
 
-                <th width="120px">
+                <th width="50px">
                     Subtotal
                 </th>
 
-                <th width="80px">
+                <th width="50px">
                     Action
                 </th>
 
@@ -47,7 +47,7 @@
 
                         <div class="d-flex align-items-center gap-3">
 
-                            <img src="{{ url('uploads/products/' . $details['image']) }}" width="100" height="100"
+                            <img src="{{ url('uploads/products/' . $details['image']) }}" width="50" height="100"
                                 style="object-fit:contain;">
 
                             <div>

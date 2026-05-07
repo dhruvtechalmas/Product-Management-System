@@ -20,29 +20,34 @@
 <body class="bg-gray-100">
     <div class="container mt-5">
 
-        <div class="card shadow">
+        <form action="{{ route('order.post') }}" method="post">
+            @csrf
 
-            <div class="card-header bg-dark text-white">
+            <div class="card shadow">
 
-                <h3 class="mb-0">
-                    My Cart
-                </h3>
+                <div class="card-header bg-dark text-white">
 
-            </div>
-
-            <div class="card-body" id="cart-products">
-                @include('carts.cartProducts')
-            </div>
-            <div class="card-footer bg-white border-0">
-
-                <div class="d-flex justify-content-end gap-2 p-3">
-                    <a class="btn btn-warning" href="{{ url('/') }}">Continue Shoping</a>
-                    <button class="btn btn-success">Checkout</button>
+                    <h3 class="mb-0">
+                        My Cart
+                    </h3>
 
                 </div>
+
+                <div class="card-body" id="cart-products">
+                    @include('carts.cartProducts')
+                </div>
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-flex justify-content-end gap-2 p-3">
+                        <a class="btn btn-warning" href="{{ url('/') }}">Continue Shoping</a>
+                        <button class="btn btn-success">Checkout</button>
+
+                    </div>
+                </div>
+
             </div>
 
-        </div>
+        </form>
 
     </div>
 
