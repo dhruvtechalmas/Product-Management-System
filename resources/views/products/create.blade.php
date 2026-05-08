@@ -113,7 +113,7 @@
                         {{-- Stock / Instock --}}
                         <div class="mb-3">
                             <label>Stock Quantity</label>
-                            <input type="number" name="stock" class="form-control" min="0">
+                            <input type="number" name="stock" class="form-control" min="0"  value="{{ old('stock') }}">>
                         </div>
 
                         <div class="mb-3">

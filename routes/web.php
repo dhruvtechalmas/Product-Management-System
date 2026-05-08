@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -30,11 +31,11 @@ Route::post('/cart-update', [CartController::class, 'cartUpdate'])
 Route::post('/order', [CartController::class, 'order'])
     ->middleware('auth')
     ->name('order.post');
-Route::get('/payment-success',[PaymentController::class, 'paymentSuccess'])
+Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])
     ->name('payment.success');
-Route::get('/payment-cancel',[PaymentController::class, 'paymentCancel'])
+Route::get('/payment-cancel', [PaymentController::class, 'paymentCancel'])
     ->name('payment.cancel');
-Route::get('/invoice/{id}',[InvoiceController::class, 'download'])
+Route::get('/invoice/{id}', [InvoiceController::class, 'download'])
     ->name('invoice.download');
 
 Route::get('/cart/increase/{id}', [CartController::class, 'increase'])
@@ -43,10 +44,16 @@ Route::get('/cart/increase/{id}', [CartController::class, 'increase'])
 Route::get('/cart/decrease/{id}', [CartController::class, 'decrease'])
     ->name('cart.decrease');
 
+Route::get('/my-orders', [OrderController::class, 'myOrders'])
+    ->middleware('auth')
+    ->name('my.orders');
 
 
 
 
+Route::get('/user-dashboard', function () {
+    return view('user-dashboard');
+})->middleware(['auth'])->name('user.dashboard');
 
 
 Route::middleware([

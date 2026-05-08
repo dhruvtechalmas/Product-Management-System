@@ -342,7 +342,7 @@
                 margin-top:40px;
             ">
 
-                    <a href="{{ url('/my-orders') }}" style="
+                    <a href="{{ route('my.orders') }}" style="
                     background:#1f2937;
                     color:white;
                     text-decoration:none;

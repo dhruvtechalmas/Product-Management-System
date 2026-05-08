@@ -14,7 +14,7 @@
 
                 <th>Subtotal</th>
 
-                <th>Status</th>
+                <th>Stock_Status</th>
 
                 <th>Action</th>
 
@@ -75,29 +75,26 @@
                         <div class="d-flex align-items-center gap-2">
 
                             {{-- DECREASE --}}
-                            <a href="{{ route('cart.decrease', $id) }}">
-                                <button class="btn btn-danger btn-sm decrease-cart" data-id="{{ $id }}">
-                                    -
-                                </button>
+                            <button class="btn btn-danger btn-sm decrease-cart" data-id="{{ $id }}">
 
-                            </a>
+                                -
+
+                            </button>
 
                             {{-- QUANTITY --}}
-                            <span>{{ $details['quantity'] }}</span>
+                            <input type="number" value="{{ $details['quantity'] }}" min="1" class="form-control quantity"
+                                style="width:70px;">
 
                             {{-- INCREASE --}}
-                            <a href="{{ route('cart.increase', $id) }}">
+                            <button class="btn btn-success btn-sm increase-cart" data-id="{{ $id }}">
 
-                                <button class="btn btn-success btn-sm increase-cart" data-id="{{ $id }}">
-                                    +
-                                </button>
+                                +
 
-                            </a>
+                            </button>
 
                         </div>
 
                     </td>
-
                     {{-- SUBTOTAL --}}
                     <td>
 

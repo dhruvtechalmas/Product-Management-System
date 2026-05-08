@@ -83,6 +83,7 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->stock = $request->stock;
         $product->stock_status = $request->stock > 0 ? 'in_stock' : 'out_of_stock';
+
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -91,6 +92,8 @@ class ProductController extends Controller
             $image->move(public_path('uploads/products'), $imagename);
             $product->image = $imagename;
             $product->save();
+
+            
         }
 
         // 👉 sab users nikalo
@@ -141,7 +144,9 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:0,1'
+            'status' => 'required|in:0,1',
+            'stock' => 'required|integer|min:0',
+            'stock_status' => 'required|in:in_stock,out_of_stock'
 
         ]);
 
@@ -157,6 +162,8 @@ class ProductController extends Controller
         $product->quantity = $request->quantity;
         $product->status = $request->status;
         $product->description = $request->description;
+        $product->stock += $request->stock;
+        $product->stock_status = $request->stock > 0 ? 'in_stock' : 'out_of_stock';
         $product->save();
 
         if ($request->hasFile('image')) {

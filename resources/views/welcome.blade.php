@@ -142,13 +142,17 @@
                             {{ $product->description }}
                         </p>
 
-                        <p style="margin-bottom: auto" class="text-sm ">
+                        {{-- <p style="margin-bottom: auto" class="text-sm ">
                             {{ $product->sku }}
-                        </p>
+                        </p> --}}
 
                         <h3 class="text-xl font-bold mt-1">
                             ₹{{ $product->price }}
                         </h3>
+
+                        <span style="margin-bottom: auto" class="badge bg-success ">
+                            {{ $product->stock_status }}
+                        </span>
 
                         <div style=" display:flex; justify-content: center; align-items: center; padding-bottom:16px;">
 

@@ -159,6 +159,7 @@
         });
 
 
+
         // DECREASE AJAX
 
         $(document).on('click', '.decrease-cart', function (e) {
@@ -182,7 +183,6 @@
             });
 
         });
-
     </script>
 
 </body>

@@ -28,7 +28,6 @@ class CartController extends Controller
                 "image" => $product->image,
                 "quantity" => 1,
                 "stock" => $product->stock,
-
             ];
         }
 
@@ -142,8 +141,11 @@ class CartController extends Controller
         if (isset($cart[$id])) {
             // STOCK CHECK
             if ($cart[$id]['quantity'] >= $product->stock) {
-                
-                return back()->with('error', 'Only ' . $product->stock . ' items available');
+                $view = view('carts.cartProducts')->render();
+
+                return response()->json([
+                    'success' => $view
+                ]);
             }
 
             $cart[$id]['quantity']++;
@@ -151,29 +153,33 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
 
-        return back();
-    }
+        $view = view('carts.cartProducts')->render();
 
+        return response()->json([
+            'success' => $view
+        ]);
+    }
     public function decrease($id)
     {
         $cart = session()->get('cart');
 
         if (isset($cart[$id])) {
-
             if ($cart[$id]['quantity'] > 1) {
-
                 $cart[$id]['quantity']--;
 
             } else {
 
                 unset($cart[$id]);
-
             }
 
             session()->put('cart', $cart);
         }
 
-        return redirect()->back();
+        $view = view('carts.cartProducts')->render();
+
+        return response()->json([
+            'success' => $view
+        ]);
     }
 
 }
