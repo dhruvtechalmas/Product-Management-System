@@ -36,7 +36,7 @@ class ProductController extends Controller
         $products = $query->paginate(25)->withQueryString();
 
         $categories = Category::all();
-      
+
 
         return view('products.index', compact('products', 'categories'));
     }
@@ -64,8 +64,9 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:0,1'
-
+            'status' => 'required|in:0,1',
+            'stock' => 'required|integer|min:0',
+            'stock_status' => 'required|in:in_stock,out_of_stock',
         ]);
 
         if ($validator->fails()) {
@@ -80,6 +81,8 @@ class ProductController extends Controller
         $product->quantity = $request->quantity;
         $product->status = $request->status;
         $product->description = $request->description;
+        $product->stock = $request->stock;
+        $product->stock_status = $request->stock > 0 ? 'in_stock' : 'out_of_stock';
         $product->save();
 
         if ($request->hasFile('image')) {
@@ -92,12 +95,12 @@ class ProductController extends Controller
 
         // 👉 sab users nikalo
         $users = User::all();
-       
+
 
         // 👉 har user ko job dispatch
-        
+
         $delay = 0;
-        
+
         foreach ($users as $user) {
             if (!empty($user->email) && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
                 SendProductEmailJob::dispatch($product, $user);

@@ -22,20 +22,30 @@ Route::get('/', function () {
 
 
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])
-->name('add.to.cart');
+    ->name('add.to.cart');
 Route::get('/cart', [CartController::class, 'cart'])
-->name('cart');
+    ->name('cart');
 Route::post('/cart-update', [CartController::class, 'cartUpdate'])
-->name('cart.update');
+    ->name('cart.update');
 Route::post('/order', [CartController::class, 'order'])
     ->middleware('auth')
     ->name('order.post');
-Route::get('/payment-success',
-    [PaymentController::class, 'paymentSuccess']
-)->name('payment.success');
-Route::get('/invoice/{id}',
-    [InvoiceController::class, 'download'])
+Route::get('/payment-success',[PaymentController::class, 'paymentSuccess'])
+    ->name('payment.success');
+Route::get('/payment-cancel',[PaymentController::class, 'paymentCancel'])
+    ->name('payment.cancel');
+Route::get('/invoice/{id}',[InvoiceController::class, 'download'])
     ->name('invoice.download');
+
+Route::get('/cart/increase/{id}', [CartController::class, 'increase'])
+    ->name('cart.increase');
+
+Route::get('/cart/decrease/{id}', [CartController::class, 'decrease'])
+    ->name('cart.decrease');
+
+
+
+
 
 
 

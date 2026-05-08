@@ -8,21 +8,15 @@
 
                 <th width="300">Products</th>
 
-                <th width="50px">
-                    Price
-                </th>
+                <th>Price</th>
 
-                <th width="50px">
-                    Quantity
-                </th>
+                <th>Quantity</th>
 
-                <th width="50px">
-                    Subtotal
-                </th>
+                <th>Subtotal</th>
 
-                <th width="50px">
-                    Action
-                </th>
+                <th>Status</th>
+
+                <th>Action</th>
 
             </tr>
 
@@ -35,20 +29,22 @@
             @foreach(session('cart') as $id => $details)
 
                 @php
+
                     $subtotal = $details['price'] * $details['quantity'];
+
                     $total += $subtotal;
+
                 @endphp
 
+                <tr data-id="{{ $id }}">
 
-                <tr data-id="{{  $id  }}">
-
-                    {{-- Product --}}
+                    {{-- PRODUCT --}}
                     <td>
 
                         <div class="d-flex align-items-center gap-3">
 
-                            <img src="{{ url('uploads/products/' . $details['image']) }}" width="50" height="100"
-                                style="object-fit:contain;">
+                            <img src="{{ url('uploads/products/' . $details['image']) }}" width="60" height="80"
+                                style="object-fit: contain;">
 
                             <div>
 
@@ -66,54 +62,105 @@
 
                     </td>
 
-                    {{-- Price --}}
+                    {{-- PRICE --}}
                     <td>
 
                         ₹{{ $details['price'] }}
 
                     </td>
 
-                    {{-- Quantity --}}
+                    {{-- QUANTITY --}}
                     <td>
 
-                        <input type="number" value="{{ $details['quantity'] }}" min="1" class="form-control quantity">
+                        <div class="d-flex align-items-center gap-2">
+
+                            {{-- DECREASE --}}
+                            <a href="{{ route('cart.decrease', $id) }}">
+                                <button class="btn btn-danger btn-sm decrease-cart" data-id="{{ $id }}">
+                                    -
+                                </button>
+
+                            </a>
+
+                            {{-- QUANTITY --}}
+                            <span>{{ $details['quantity'] }}</span>
+
+                            {{-- INCREASE --}}
+                            <a href="{{ route('cart.increase', $id) }}">
+
+                                <button class="btn btn-success btn-sm increase-cart" data-id="{{ $id }}">
+                                    +
+                                </button>
+
+                            </a>
+
+                        </div>
 
                     </td>
 
-                    {{-- Subtotal --}}
-                    <td class="subtotal">
+                    {{-- SUBTOTAL --}}
+                    <td>
+
                         ₹{{ $subtotal }}
+
                     </td>
 
-                    {{-- Remove --}}
+                    {{-- STOCK --}}
+                    {{-- <td>
+
+                        {{ $details['stock'] ?? 0 }}
+
+                    </td> --}}
+
+                    {{-- STATUS --}}
                     <td>
 
-                        <button class="btn btn-danger btn-sm remove-from-cart" data-id="{{ $id }}">
+                        @if(($details['stock'] ?? 0) > 0)
+
+                            <span class="badge bg-success">
+                                In Stock
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-danger">
+                                Out Of Stock
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                    {{-- REMOVE --}}
+                    <td>
+
+                        <button class="btn btn-danger btn-sm remove-from-cart remove-from-cart" data-id="{{ $id }}">
 
                             <i class="fa fa-trash"></i>
 
                         </button>
+
                     </td>
 
                 </tr>
 
             @endforeach
 
-            {{-- Total --}}
+            {{-- TOTAL --}}
             <tr>
 
                 <td colspan="3" class="text-end">
 
-                    <h4>
-                        Total :
-                    </h4>
+                    <h4>Total :</h4>
 
                 </td>
 
-                <td colspan="2">
+                <td colspan="4">
 
                     <h4 id="cart-total">
+
                         ₹{{ $total }}
+
                     </h4>
 
                 </td>
@@ -135,3 +182,14 @@
     </div>
 
 @endif
+<script>
+
+    handler: function (response) {
+
+        window.location.href =
+            "/payment-success?payment_id=" +
+            response.razorpay_payment_id;
+
+    }
+
+</script>

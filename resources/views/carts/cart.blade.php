@@ -18,9 +18,10 @@
 </head>
 
 <body class="bg-gray-100">
+
     <div class="container mt-5">
 
-        <form action="{{ route('order.post') }}" method="post">
+        <form action="{{ route('order.post') }}" method="POST">
             @csrf
 
             <div class="card shadow">
@@ -34,15 +35,25 @@
                 </div>
 
                 <div class="card-body" id="cart-products">
+
                     @include('carts.cartProducts')
+
                 </div>
+
                 <div class="card-footer bg-white border-0">
 
                     <div class="d-flex justify-content-end gap-2 p-3">
-                        <a class="btn btn-warning" href="{{ url('/') }}">Continue Shoping</a>
-                        <button class="btn btn-success">Checkout</button>
+
+                        <a class="btn btn-warning" href="{{ url('/') }}">
+                            Continue Shopping
+                        </a>
+
+                        <button class="btn btn-success">
+                            Checkout
+                        </button>
 
                     </div>
+
                 </div>
 
             </div>
@@ -53,7 +64,7 @@
 
     <script>
 
-        //UPDATE QUANTITY
+        // UPDATE QUANTITY
 
         $(document).on('change', '.quantity', function (e) {
 
@@ -62,27 +73,34 @@
             var elem = $(this);
 
             $.ajax({
+
                 url: '{{ route("cart.update") }}',
+
                 method: "POST",
+
                 data: {
+
                     _token: '{{ csrf_token() }}',
+
                     type: "update",
+
                     product_id: elem.parents("tr").attr("data-id"),
+
                     quantity: elem.val()
                 },
 
                 success: function (response) {
 
                     $('#cart-products').html(response.success);
-                    console.log(response);
 
                 }
+
             });
 
         });
 
 
-        // DELETE AJAX
+        // DELETE PRODUCT
 
         $(document).on('click', '.remove-from-cart', function (e) {
 
@@ -91,26 +109,79 @@
             var elem = $(this);
 
             $.ajax({
+
                 url: '{{ route("cart.update") }}',
+
                 method: "POST",
+
                 data: {
+
                     _token: '{{ csrf_token() }}',
+
                     type: "delete",
+
                     product_id: elem.parents("tr").attr("data-id"),
+
                 },
 
                 success: function (response) {
 
                     $('#cart-products').html(response.success);
-                    console.log(response);
 
                 }
+
+            });
+
+        });
+
+        // INCREASE AJAX
+
+        $(document).on('click', '.increase-cart', function (e) {
+
+            e.preventDefault();
+
+            var id = $(this).data('id');
+
+            $.ajax({
+
+                url: '/cart/increase/' + id,
+
+                method: "GET",
+
+                success: function (response) {
+
+                    $('#cart-products').html(response.success);
+
+                }
+
             });
 
         });
 
 
+        // DECREASE AJAX
 
+        $(document).on('click', '.decrease-cart', function (e) {
+
+            e.preventDefault();
+
+            var id = $(this).data('id');
+
+            $.ajax({
+
+                url: '/cart/decrease/' + id,
+
+                method: "GET",
+
+                success: function (response) {
+
+                    $('#cart-products').html(response.success);
+
+                }
+
+            });
+
+        });
 
     </script>
 

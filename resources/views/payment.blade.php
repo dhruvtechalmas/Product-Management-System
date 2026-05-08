@@ -1,42 +1,67 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Payment</title>
+
+    <title>Razorpay Payment</title>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 </head>
+
 <body>
 
-<script>
+    <script>
 
-    var options = {
+        var options = {
 
-        "key": "{{ config('services.razorpay.key') }}",
+            "key": "{{ config('services.razorpay.key') }}",
 
-        "amount": "{{ $amount }}",
+            "amount": "{{ $amount }}",
 
-        "currency": "INR",
+            "currency": "INR",
 
-        "name": "My Shop",
+            "name": "My Store",
 
-        "description": "Order Payment",
+            "description": "Order Payment",
 
-        "order_id": "{{ $razorpayOrderId }}",
+            "order_id": "{{ $razorpayOrderId }}",
 
-        "handler": function (response){
+            // PAYMENT SUCCESS
+            "handler": function (response)
+            {
+                window.location.href =
+                    "{{ route('payment.success') }}" +
+                    "?razorpay_order_id=" +
+                    response.razorpay_order_id;
+            },
 
-            window.location.href =
-            "/payment-success?order_id={{ $order->id }}";
+            // PAYMENT CANCEL
+            "modal": {
 
-        }
+                "ondismiss": function ()
+                {
+                    window.location.href =
+                        "{{ route('payment.cancel') }}";
+                }
 
-    };
+            },
 
-    var rzp1 = new Razorpay(options);
+            "theme": {
 
-    rzp1.open();
+                "color": "#3399cc"
 
-</script>
+            }
+
+        };
+
+        var rzp1 = new Razorpay(options);
+
+        // OPEN RAZORPAY
+        rzp1.open();
+
+    </script>
 
 </body>
+
 </html>

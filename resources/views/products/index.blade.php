@@ -72,7 +72,8 @@
                             <th>SKU</th>
                             <th>Category</th>
                             <th>Price</th>
-                            <th>Qty</th>
+                            <th>Stock</th>
+                            <th>Status</th>
                             <th>Status</th>
                             <th>Image</th>
                             <th>Created_at</th>
@@ -113,7 +114,29 @@
                                         <td>{{ $product->sku }}</td>
                                         <td>{{ $product->category->name ?? '-' }}</td>
                                         <td>${{ $product->price }}</td>
-                                        <td>{{ $product->quantity }}</td>
+                                        <td>
+
+                                            {{ $details['stock'] ?? 0 }}
+
+                                        </td>
+
+                                        {{-- STATUS --}}
+                                        <td>
+
+                                            @if(($details['stock'] ?? 0) > 0)
+
+                                                <span class="badge bg-success">
+                                                    In Stock
+                                                </span>
+
+                                            @else
+
+                                                <span class="badge bg-danger">Out Of Stock</span>
+
+                                            @endif
+
+                                        </td>
+
                                         <td>
                                             <span class="badge bg-success">
                                                 {{ $product->status ? 'Active' : 'Inactive'  }}

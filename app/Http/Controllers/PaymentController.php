@@ -4,36 +4,78 @@ namespace App\Http\Controllers;
 
 use App\Mail\PaymentSuccessMail;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
+    // PAYMENT SUCCESS
     public function paymentSuccess(Request $request)
     {
-        $order = Order::find($request->order_id);
+        $order = Order::where('payment_id',$request->razorpay_order_id)->first();
 
+        // ORDER NOT FOUND
         if (!$order) {
 
-            return redirect('/')
+            return redirect('/cart')
                 ->with('error', 'Order not found');
-
         }
 
-        $order->update([
-            'payment_status' => 'paid'
-        ]);
+        // ALREADY PAID
+        if ($order->payment_status == 'paid') {
 
-        // Send Mail
+            return redirect('/')
+                ->with('success', 'Already Paid');
+        }
 
-       Mail::to(auth()->user()->email)
+        // PAYMENT SUCCESS
+        $order->payment_status = 'paid';
+
+        $order->save();
+
+
+        // REDUCE STOCK
+        foreach ($order->products as $item) {
+            $product = Product::find($item->product_id);
+
+            if ($product) {
+                $product->stock -= $item->quantity;
+
+                // STOCK STATUS
+                if ($product->stock <= 0) {
+                    $product->stock = 0;
+
+                    $product->stock_status = 'out_of_stock';
+
+                } else {
+
+                    $product->stock_status = 'in_stock';
+                }
+
+                $product->save();
+            }
+        }
+
+
+        // SEND MAIL
+        Mail::to(auth()->user()->email)
             ->send(new PaymentSuccessMail($order));
 
-        // Clear Cart
 
+        // CLEAR CART
         session()->forget('cart');
+
 
         return redirect('/')
             ->with('success', 'Payment Successful');
+    }
+
+
+    // PAYMENT CANCEL
+    public function paymentCancel()
+    {
+        return redirect('/cart')
+            ->with('error', 'Payment Cancelled');
     }
 }

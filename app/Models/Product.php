@@ -20,10 +20,12 @@ class Product extends Model
     'quantity',
     'description',
     'image',
-    'status'
+    'status',
+    'stock',
+    'stock_status', 
     ];
 
     public function category(){
         return $this->belongsTo(Category::class);
-    }
+    }   
 }
