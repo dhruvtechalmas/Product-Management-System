@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+
 
 class CategoryController extends Controller
 {
@@ -31,18 +33,10 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories,slug',
-            'status' => 'required|in:0,1'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+       
+        $category = new Category();
 
         $category = new Category();
         $category->name = $request->name;
@@ -67,22 +61,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCategoryRequest $request, $id)
     {
 
         $category = Category::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories,slug',
-            'status' => 'required|in:0,1'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect(route('categories.edit', $category->id))->withErrors($validator)->withInput();
-        }
-
 
         $category->name = $request->name;
         $category->slug = $request->slug;

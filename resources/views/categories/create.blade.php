@@ -26,13 +26,6 @@
 
             <div class="bg-white shadow-xl sm:rounded-lg p-6">
 
-                <!-- Success Message -->
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 <!-- Form -->
                 <form action="{{ route('categories.store') }}" method="POST">
                     @csrf

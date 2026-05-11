@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Jobs\SendProductEmailJob;
 use App\Mail\ProductCreatedMail;
 use App\Models\Category;
@@ -10,7 +12,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProductController extends Controller
@@ -46,34 +47,17 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::active()->get();
         return view('products.create', compact('categories'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-
-            'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255|unique:products,sku',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:0,1',
-            'stock' => 'required|integer|min:0',
-            'stock_status' => 'required|in:in_stock,out_of_stock',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect(route('products.create'))->withErrors($validator)->withInput();
-        }
-
         $product = new Product();
+
         $product->name = $request->name;
         $product->sku = $request->sku;
         $product->category_id = $request->category_id;
@@ -87,35 +71,29 @@ class ProductController extends Controller
         $product->save();
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imagename = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/products'), $imagename);
-            $product->image = $imagename;
-            $product->save();
 
-            
+            $image = $request->file('image');
+
+            $imagename = time() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('uploads/products'), $imagename);
+
+            $product->image = $imagename;
+
+            $product->save();
         }
 
-        // 👉 sab users nikalo
         $users = User::all();
 
-
-        // 👉 har user ko job dispatch
-
-        $delay = 0;
-
         foreach ($users as $user) {
+
             if (!empty($user->email) && filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+
                 SendProductEmailJob::dispatch($product, $user);
-                $delay += 2; // har mail 2 sec baad
             }
         }
 
-
-        return redirect(route('products.index'))->with('success', 'Product Created SuccessFully');
-
-
-
+        return redirect(route('products.index'))->with('success', 'Product Created Successfully');
     }
     /**
      * Show the form for editing the specified resource.
@@ -123,37 +101,16 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::all();
+        $categories = Category::active()->get();
         return view('products.edit', compact('product', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
-
         $product = Product::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-
-            'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255|unique:products,sku',
-            'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'status' => 'required|in:0,1',
-            'stock' => 'required|integer|min:0',
-            'stock_status' => 'required|in:in_stock,out_of_stock'
-
-        ]);
-
-        if ($validator->fails()) {
-            return redirect(route('products.edit', $product->id))->withErrors($validator)->withInput();
-        }
-
 
         $product->name = $request->name;
         $product->sku = $request->sku;
@@ -162,28 +119,29 @@ class ProductController extends Controller
         $product->quantity = $request->quantity;
         $product->status = $request->status;
         $product->description = $request->description;
-        $product->stock += $request->stock;
+
+        $product->stock = $request->stock;
+
         $product->stock_status = $request->stock > 0 ? 'in_stock' : 'out_of_stock';
+
         $product->save();
 
         if ($request->hasFile('image')) {
 
-            //delete product firts
             File::delete(public_path('uploads/products/' . $product->image));
 
-            //here we will store image
             $image = $request->file('image');
+
             $imagename = time() . '.' . $image->getClientOriginalExtension();
 
-            //save image to prodoct directory
             $image->move(public_path('uploads/products'), $imagename);
 
-            //save image name in database
             $product->image = $imagename;
+
             $product->save();
         }
 
-        return redirect(route('products.index'))->with('success', 'Product Updated SuccessFully');
+        return redirect(route('products.index'))->with('success', 'Product Updated Successfully');
     }
 
     /**

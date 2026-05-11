@@ -183,9 +183,13 @@
 
             <tr>
 
-                <td width="60%">
+                <td width="60%">    
 
-                    <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" class="logo">
+                    <div style="text-align:left; margin-bottom:20px;">
+                        @if($logoBase64)
+                            <img src="{{ $logoBase64 }}" width="100">
+                        @endif
+                    </div>
 
                     <div class="company-name">
                         Fashion Flow

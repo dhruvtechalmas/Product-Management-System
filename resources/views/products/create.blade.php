@@ -16,13 +16,6 @@
 
             <div class="bg-white shadow-xl sm:rounded-lg p-6">
 
-                <!-- Success -->
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -113,7 +106,7 @@
                         {{-- Stock / Instock --}}
                         <div class="mb-3">
                             <label>Stock Quantity</label>
-                            <input type="number" name="stock" class="form-control" min="0"  value="{{ old('stock') }}">>
+                            <input type="number" name="stock" class="form-control" min="0" value="{{ old('stock') }}">
                         </div>
 
                         <div class="mb-3">

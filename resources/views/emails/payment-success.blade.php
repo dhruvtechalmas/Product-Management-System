@@ -30,7 +30,7 @@
 
             <div style="
             background:#1f2937;
-            text-align:center;
+            /* text-align:center; */
             padding:35px;
         ">
 

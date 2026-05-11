@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')->get();
-        $roles = Role::all();
+        $roles = Role::whereIn('name', ['admin', 'staff'])->get();
         $permissions = Permission::all();
 
 
@@ -56,7 +56,7 @@ class UserController extends Controller
     {
         // dd('DELETE HIT', $id);
         $user = User::find($id);
-     
+
 
         if (!$user) {
             return back()->with('error', 'User not found');

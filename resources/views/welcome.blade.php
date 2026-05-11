@@ -154,22 +154,44 @@
                             {{ $product->stock_status }}
                         </span>
 
-                        <div style=" display:flex; justify-content: center; align-items: center; padding-bottom:16px;">
+                        
+                        <div style="display:flex; justify-content:center; align-items:center; padding-bottom:16px;">
 
-                            <a href="{{ route('add.to.cart', $product->id) }}" style="background:#ffc107;
-                                                                  color:black;
-                                                                  padding:7px 12px;
-                                                                  border-radius:6px;
-                                                                  display:block;
-                                                                  text-align:center;
-                                                                  text-decoration:none;
-                                                                  margin-top:12px;
-                                                                  transition:0.3s;"
-                                onmouseover="this.style.background='#e0a800'" onmouseout="this.style.background='#ffc107'">
+                            @if($product->stock > 0)
 
-                                Add to Cart
+                                        <a href="{{ route('add.to.cart', $product->id) }}" style="background:#ffc107;
+                                  color:black;
+                                  padding:7px 12px;
+                                  border-radius:6px;
+                                  display:block;
+                                  text-align:center;
+                                  text-decoration:none;
+                                  margin-top:12px;
+                                  transition:0.3s;" onmouseover="this.style.background='#e0a800'"
+                                            onmouseout="this.style.background='#ffc107'">
 
-                            </a>
+                                            Add to Cart
+
+                                        </a>
+
+                            @else
+
+                                        <button disabled style="background:#dc3545;
+                                   color:white;
+                                   padding:7px 12px;
+                                   border:none;
+                                   border-radius:6px;
+                                   display:block;
+                                   text-align:center;
+                                   margin-top:12px;
+                                   cursor:not-allowed;">
+
+                                            Out Of Stock
+
+                                        </button>
+
+                            @endif
+
                         </div>
 
                     </div>
