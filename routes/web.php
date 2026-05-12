@@ -66,7 +66,7 @@ Route::middleware([
        return app(DashboardController::class)->index();
         }
         if (auth()->user()->hasRole('staff')) {
-           return view('user-dashboard');
+           return view('users.dashboard');
         }
         abort(403);
     })->name('dashboard');

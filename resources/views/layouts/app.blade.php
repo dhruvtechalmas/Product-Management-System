@@ -76,12 +76,12 @@
 
 <script>
 
-    @if(Session::has('success'))
-        toastr.success("{{ Session::get('success') }}");
+    @if($message = Session::pull('success'))
+        toastr.success("{{ $message }}");
     @endif
 
-    @if(Session::has('error'))
-        toastr.error("{{ Session::get('error') }}");
+    @if($message = Session::pull('error'))
+        toastr.error("{{ $message }}");
     @endif
 
     toastr.options = {
