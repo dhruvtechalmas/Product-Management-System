@@ -28,8 +28,7 @@
             "order_id": "{{ $razorpayOrderId }}",
 
             // PAYMENT SUCCESS
-            "handler": function (response)
-            {
+            "handler": function (response) {
                 window.location.href =
                     "{{ route('payment.success') }}" +
                     "?razorpay_order_id=" +
@@ -39,8 +38,7 @@
             // PAYMENT CANCEL
             "modal": {
 
-                "ondismiss": function ()
-                {
+                "ondismiss": function () {
                     window.location.href =
                         "{{ route('payment.cancel') }}";
                 }
@@ -56,6 +54,11 @@
         };
 
         var rzp1 = new Razorpay(options);
+
+        rzp1.on('payment.failed', function (response) {
+
+            window.location.href = "/payment-cancel";
+        });
 
         // OPEN RAZORPAY
         rzp1.open();

@@ -8,11 +8,11 @@ class LoginResponse implements LoginResponseContract
 {
     public function toResponse($request)
     {
-        if(auth()->user()->hasRole('admin','super-admin'))
-        {
-            return redirect('/dashboard');
+        if (auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin')) {
+
+            return redirect()->route('dashboard');
         }
 
-        return redirect('/user-dashboard');
+        return redirect()->route('user-dashboard');
     }
 }

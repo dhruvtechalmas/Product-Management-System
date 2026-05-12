@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\PaymentSuccessMail;
+use App\Mail\PaymentFailedMail;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class PaymentController extends Controller
     // PAYMENT SUCCESS
     public function paymentSuccess(Request $request)
     {
-        $order = Order::where('payment_id',$request->razorpay_order_id)->first();
+        $order = Order::where('payment_id', $request->razorpay_order_id)->first();
 
         // ORDER NOT FOUND
         if (!$order) {
@@ -34,16 +35,18 @@ class PaymentController extends Controller
 
         $order->save();
 
-
         // REDUCE STOCK
         foreach ($order->products as $item) {
+
             $product = Product::find($item->product_id);
 
             if ($product) {
+
                 $product->stock -= $item->quantity;
 
                 // STOCK STATUS
                 if ($product->stock <= 0) {
+
                     $product->stock = 0;
 
                     $product->stock_status = 'out_of_stock';
@@ -57,17 +60,14 @@ class PaymentController extends Controller
             }
         }
 
-
-        // SEND MAIL
+        // SEND SUCCESS MAIL
         Mail::to(auth()->user()->email)
             ->send(new PaymentSuccessMail($order));
-
 
         // CLEAR CART
         session()->forget('cart');
 
-
-        return redirect('/')
+        return redirect()->route('cart')
             ->with('success', 'Payment Successful');
     }
 
@@ -75,7 +75,13 @@ class PaymentController extends Controller
     // PAYMENT CANCEL
     public function paymentCancel()
     {
+        $user = auth()->user();
+
+        // SEND FAILED MAIL
+        Mail::to($user->email)
+            ->send(new PaymentFailedMail($user));
+
         return redirect('/cart')
-            ->with('error', 'Payment Cancelled');
+            ->with('error', 'Payment Cancelled or Failed!');
     }
 }

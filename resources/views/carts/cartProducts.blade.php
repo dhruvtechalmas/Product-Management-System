@@ -183,10 +183,25 @@
 
     handler: function (response) {
 
-        window.location.href =
-            "/payment-success?payment_id=" +
-            response.razorpay_payment_id;
+        var options = {
 
+            "key": "YOUR_KEY",
+
+            "amount": amount,
+
+            "handler": function (response) {
+
+                window.location.href = "/payment-success";
+            },
+
+            "modal": {
+
+                "ondismiss": function () {
+
+                    window.location.href = "/payment-failed";
+                }
+            }
+        };
     }
 
 </script>

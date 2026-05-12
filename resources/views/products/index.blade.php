@@ -52,7 +52,7 @@
                             <th>Price</th>
                             <th>Stock</th>
                             <th>Stock_Status</th>
-                            <th>Status</th>
+                            {{-- <th>Status</th> --}}
                             <th>Image</th>
                             <th>Created_at</th>
                             <th>Action</th>
@@ -111,11 +111,11 @@
 
                                         </td>
 
-                                        <td>
+                                        {{-- <td>
                                             <span class="badge bg-success">
                                                 {{ $product->status ? 'Active' : 'Inactive'  }}
                                             </span>
-                                        </td>
+                                        </td> --}}
                                         <td>
                                             @if($product->image)
                                                 <img class="rounded" src="{{ url('uploads/products/' . $product->image) }}" width="50">

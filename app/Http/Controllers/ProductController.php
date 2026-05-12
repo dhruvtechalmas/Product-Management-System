@@ -63,7 +63,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->price = $request->price;
         $product->quantity = $request->quantity;
-        $product->status = $request->status;
+        // $product->status = $request->status;
         $product->description = $request->description;
         $product->stock = $request->stock;
         $product->stock_status = $request->stock > 0 ? 'in_stock' : 'out_of_stock';
@@ -117,7 +117,7 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->price = $request->price;
         $product->quantity = $request->quantity;
-        $product->status = $request->status;
+        // $product->status = $request->status;
         $product->description = $request->description;
 
         $product->stock = $request->stock;

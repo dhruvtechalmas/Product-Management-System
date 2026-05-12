@@ -83,13 +83,13 @@
                         </div>
 
                         <!-- Status -->
-                        <div class="col-md-6 mb-3">
+                        {{-- <div class="col-md-6 mb-3">
                             <label>Status</label>
                             <select name="status" class="form-control">
                                 <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Active</option>
                                 <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Inactive</option>
                             </select>
-                        </div>
+                        </div> --}}
 
                         <!-- Description -->
                         <div class="col-md-12 mb-3">

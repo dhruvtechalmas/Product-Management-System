@@ -64,8 +64,6 @@ class CartController extends Controller
 
         session()->put('cart', $cart);
 
-
-
         $view = view("carts.cartProducts")->render();
 
         return response()->json([
@@ -97,7 +95,7 @@ class CartController extends Controller
         }
 
         $order->amount = $amount;
-        $order->payment_status = 'pending';
+        $order->payment_status = 'failed';
         $order->save();
 
         // Razorpay

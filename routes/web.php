@@ -24,17 +24,23 @@ Route::get('/', function () {
 
 Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])
     ->name('add.to.cart');
+    
 Route::get('/cart', [CartController::class, 'cart'])
     ->name('cart');
+
 Route::post('/cart-update', [CartController::class, 'cartUpdate'])
     ->name('cart.update');
+
 Route::post('/order', [CartController::class, 'order'])
     ->middleware('auth')
     ->name('order.post');
+
 Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])
     ->name('payment.success');
+
 Route::get('/payment-cancel', [PaymentController::class, 'paymentCancel'])
     ->name('payment.cancel');
+
 Route::get('/invoice/{id}', [InvoiceController::class, 'download'])
     ->name('invoice.download');
 
@@ -49,24 +55,22 @@ Route::get('/my-orders', [OrderController::class, 'myOrders'])
     ->name('my.orders');
 
 
-
-
-Route::get('/user-dashboard', function () {
-    return view('user-dashboard');
-})->middleware(['auth'])->name('user.dashboard');
-
-
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // MAIN DASHBOARD REDIRECT
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        if (auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('admin')) {
+       return app(DashboardController::class)->index();
+        }
+        if (auth()->user()->hasRole('staff')) {
+           return view('user-dashboard');
+        }
+        abort(403);
     })->name('dashboard');
-
 });
-
 
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
@@ -141,7 +145,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
 
 

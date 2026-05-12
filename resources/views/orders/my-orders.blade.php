@@ -118,8 +118,8 @@
 
                         @else
 
-                            <span class="badge bg-warning text-dark mb-3">
-                                Payment Pending
+                            <span class="badge bg-danger text-dark mb-3">
+                                Payment Failed
                             </span>
 
                         @endif
@@ -197,7 +197,6 @@
 
 
                         {{-- PRODUCTS --}}
-
                         <div class="row">
 
                             @foreach($order->products as $item)
@@ -206,37 +205,66 @@
 
                                     <div class="border rounded-4 p-3 bg-light d-flex gap-3 align-items-center">
 
-                                        <img src="{{ url('uploads/products/' . $item->product->image) }}" class="product-image">
+                                        @if($item->product)
 
-                                        <div>
+                                            <img src="{{ url('uploads/products/' . $item->product->image) }}" class="product-image">
 
-                                            <h5 class="mb-1">
+                                            <div>
 
-                                                {{ $item->product->name }}
+                                                <h5 class="mb-1">
 
-                                            </h5>
+                                                    {{ $item->product->name }}
 
-                                            <p class="mb-1 text-muted">
+                                                </h5>
 
-                                                SKU:
-                                                {{ $item->product->sku }}
+                                                <p class="mb-1 text-muted">
 
-                                            </p>
+                                                    SKU:
+                                                    {{ $item->product->sku }}
 
-                                            <p class="mb-1">
+                                                </p>
 
-                                                Quantity:
-                                                {{ $item->quantity }}
+                                                <p class="mb-1">
 
-                                            </p>
+                                                    Quantity:
+                                                    {{ $item->quantity }}
 
-                                            <strong>
+                                                </p>
 
-                                                ₹{{ $item->price }}
+                                                <strong>
 
-                                            </strong>
+                                                    ₹{{ $item->price }}
 
-                                        </div>
+                                                </strong>
+
+                                            </div>
+
+                                        @else
+
+                                            <div>
+
+                                                <h5 class="text-danger">
+
+                                                    Product Deleted
+
+                                                </h5>
+
+                                                <p class="mb-1">
+
+                                                    Quantity:
+                                                    {{ $item->quantity }}
+
+                                                </p>
+
+                                                <strong>
+
+                                                    ₹{{ $item->price }}
+
+                                                </strong>
+
+                                            </div>
+
+                                        @endif
 
                                     </div>
 

@@ -20,7 +20,7 @@ class Product extends Model
     'quantity',
     'description',
     'image',
-    'status',
+    // 'status',
     'stock',
     'stock_status', 
     ];

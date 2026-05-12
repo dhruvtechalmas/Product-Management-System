@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -22,12 +23,11 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productId = $this->route('id');
-
         return [
             'name' => 'required|string|max:255',
 
-            'sku' => 'required|string|max:255|unique:products,sku,' . $productId,
+            // Rule Validation in sku Code
+            'sku' => ['required','string','max:255',Rule::unique('products', 'sku')->ignore($this->product),],
 
             'category_id' => 'required|exists:categories,id',
 
@@ -39,7 +39,7 @@ class UpdateProductRequest extends FormRequest
 
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
 
-            'status' => 'required|in:0,1',
+            // 'status' => 'required|in:0,1',
 
             'stock' => 'required|integer|min:0',
 
